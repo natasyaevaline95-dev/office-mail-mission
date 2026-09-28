@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OFFICE MAIL MISSION - Pixel Adventure</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#1a1a2e;--bg2:#16213e;--bg3:#0f3460;
+  --panel:#2a2a4e;--panel2:#1e1e3f;
+  --accent:#e94560;--gold:#f5c518;--green:#4ecdc4;--purple:#a855f7;
+  --cream:#fef6e4;--ink:#0d0d1a;--paper:#f4e4bc;
+  --ok:#4ecdc4;--no:#e94560;
+}
+*{box-sizing:border-box;image-rendering:pixelated;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:80px}
+body{
+  margin:0;min-height:100vh;
+  font-family:'VT323',monospace;
+  font-size:24px;
+  line-height:1.4;
+  color:var(--cream);
+  background: url('https://z-cdn-media.chatglm.cn/files/cf7595dc-da8a-463e-9db1-f6f3b863726d.jpg?auth_key=1890605722-fb6a03e5b6ad437790c9fc0baeaae6b4-0-86da8393abce99899edd4bce7c476e7a') no-repeat center center fixed;
+  background-size: cover;
+  background-color: var(--bg1);
+  overflow-x:hidden;
+}
+h1,h2,h3,.btn,.tag,.num,.plank,.rib,.stamp{font-family:'Press Start 2P',monospace;letter-spacing:1px}
+
+/* ===== BACKGROUND SCENE OVERLAY ===== */
+.scene{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background: linear-gradient(180deg, rgba(10,10,30,0.85) 0%, rgba(15,15,40,0.95) 100%);
+}
+.stars{position:absolute;inset:0}
+.stars i{position:absolute;width:3px;height:3px;background:var(--cream);opacity:.4;animation:tw 3s infinite}
+@keyframes tw{0%,100%{opacity:.1}50%{opacity:.5}}
+
+/* ===== HUD ===== */
+.hud{
+  position:sticky;top:0;z-index:30;
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  padding:10px 16px;
+  background:rgba(10,10,30,.95);
+  border-bottom:4px solid var(--accent);
+  backdrop-filter:blur(4px);
+}
+.hud-avatar{
+  width:56px;height:72px;flex:none;
+  display:flex;align-items:flex-end;justify-content:center;
+}
+.hud-info{flex:1;min-width:140px}
+.hud-info b{font-size:12px;color:var(--gold);display:block}
+.hud-info span{font-size:20px;color:var(--cream)}
+.plank{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;
+  background:var(--panel);border:3px solid var(--ink);
+  box-shadow:0 0 0 3px var(--accent),0 4px 0 rgba(0,0,0,.5);
+  color:var(--cream);font-size:10px;
+  clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));
+}
+.bar{display:block;width:100px;height:12px;background:var(--ink);border:1px solid var(--accent);overflow:hidden;margin-top:4px}
+.bar u{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .5s}
+.snd-btn{
+  width:44px;height:44px;flex:none;cursor:pointer;
+  background:var(--panel);border:3px solid var(--ink);
+  box-shadow:0 0 0 3px var(--accent);
+  font-size:20px;color:var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));
+}
+.snd-btn:hover{background:var(--accent);color:#fff}
+
+/* ===== MAIN ===== */
+main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:16px 16px 120px}
+.scr{animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}}
+
+/* ===== PIXEL BOX ===== */
+.pbox{
+  position:relative;
+  background:rgba(26, 26, 46, 0.95);
+  border:4px solid var(--ink);
+  box-shadow:0 0 0 4px var(--accent),0 6px 0 rgba(0,0,0,.4),inset 0 0 30px rgba(0,0,0,.3);
+  padding:28px;
+  margin:16px 0;
+  clip-path:polygon(0 6px,6px 6px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 6px) calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 6px),0 calc(100% - 6px));
+}
+.pbox.gold{box-shadow:0 0 0 4px var(--gold),0 6px 0 rgba(0,0,0,.4)}
+.pbox.green{box-shadow:0 0 0 4px var(--green),0 6px 0 rgba(0,0,0,.4)}
+.pbox h2,.pbox h3{color:var(--gold);margin:0 0 16px;text-shadow:3px 3px 0 var(--ink);line-height:1.4}
+.pbox h2{font-size:clamp(18px,4vw,26px)}
+.pbox h3{font-size:16px}
+.pbox p{margin:10px 0;font-size:22px;line-height:1.5}
+
+/* ===== PAPER (Surat) ===== */
+.paper{
+  position:relative;
+  background:var(--paper);color:var(--ink);
+  border:4px solid var(--ink);
+  box-shadow:0 0 0 3px var(--gold),0 6px 0 rgba(0,0,0,.4);
+  padding:32px;
+  font-family:'VT323',monospace;font-size:22px;line-height:1.6;
+  clip-path:polygon(0 6px,6px 6px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 6px) calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 6px),0 calc(100% - 6px));
+}
+.paper::before{
+  content:'📎';position:absolute;top:-18px;left:24px;font-size:32px;
+  filter:drop-shadow(2px 2px 0 var(--ink));
+}
+.paper .tg{
+  position:absolute;top:12px;right:12px;
+  background:var(--no);color:#fff;
+  font-family:'Press Start 2P';font-size:10px;
+  padding:6px 10px;border:2px solid var(--ink);
+}
+
+/* ===== HERO ===== */
+.hero{text-align:center;padding:24px 0}
+.hero-cast{font-size:clamp(48px,10vw,80px);filter:drop-shadow(4px 4px 0 var(--ink))}
+.title{
+  margin:8px 0;
+  font-size:clamp(28px,6vw,52px);
+  color:var(--gold);
+  text-shadow:4px 4px 0 var(--accent),8px 8px 0 var(--ink);
+  line-height:1.3;
+}
+.rib{
+  display:inline-block;
+  padding:10px 24px;
+  background:var(--accent);color:#fff;
+  border:3px solid var(--ink);
+  box-shadow:0 0 0 3px var(--gold),0 4px 0 rgba(0,0,0,.4);
+  font-size:14px;
+  clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));
+}
+
+/* ===== CHARACTER SELECT ===== */
+.char-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:24px 0}
+@media(max-width:600px){.char-grid{grid-template-columns:1fr}}
+.char-card{
+  cursor:pointer;text-align:center;
+  background:rgba(30, 30, 63, 0.95);border:4px solid var(--ink);
+  box-shadow:0 0 0 3px var(--purple);
+  padding:24px;
+  transition:transform .2s,box-shadow .2s;
+  clip-path:polygon(0 6px,6px 6px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 6px) calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 6px),0 calc(100% - 6px));
+}
+.char-card:hover{transform:translateY(-4px);box-shadow:0 0 0 3px var(--gold),0 8px 0 rgba(0,0,0,.4)}
+.char-card.sel{box-shadow:0 0 0 4px var(--gold),0 0 24px var(--gold);background:var(--panel)}
+.char-card .px{display:flex;justify-content:center;margin-bottom:12px}
+.char-card .px svg{width:120px;height:auto}
+.char-card h3{font-size:16px;color:var(--gold);margin:12px 0 6px}
+.char-card p{font-size:18px;margin:0;color:var(--cream);opacity:.9}
+.char-badge{
+  display:inline-block;margin-top:12px;
+  padding:6px 12px;font-size:10px;
+  background:var(--green);color:var(--ink);
+  border:2px solid var(--ink);
+}
+
+/* ===== BUTTONS ===== */
+.btn{
+  cursor:pointer;
+  font-family:'Press Start 2P',monospace;font-size:14px;
+  padding:16px 28px;
+  color:#fff;
+  background:var(--accent);
+  border:4px solid var(--ink);
+  box-shadow:0 0 0 3px var(--gold),0 6px 0 rgba(0,0,0,.5);
+  text-shadow:2px 2px 0 var(--ink);
+  transition:transform .1s,box-shadow .1s;
+  clip-path:polygon(0 5px,5px 5px,5px 0,calc(100% - 5px) 0,calc(100% - 5px) 5px,100% 5px,100% calc(100% - 5px),calc(100% - 5px) calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,5px calc(100% - 5px),0 calc(100% - 5px));
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.15)}
+.btn:active{transform:translateY(4px);box-shadow:0 0 0 3px var(--gold),0 2px 0 rgba(0,0,0,.5)}
+.btn.green{background:var(--green);color:var(--ink);text-shadow:none}
+.btn.gold{background:var(--gold);color:var(--ink);text-shadow:none}
+
+/* ===== MISSION HEADER ===== */
+.mh{display:flex;gap:16px;align-items:center;margin:16px 0 24px;flex-wrap:wrap}
+.mh .num{
+  display:grid;place-items:center;
+  width:56px;height:56px;flex:none;
+  background:var(--gold);color:var(--ink);
+  border:4px solid var(--ink);
+  box-shadow:0 0 0 3px var(--accent);
+  font-size:20px;
+  clip-path:polygon(0 5px,5px 5px,5px 0,calc(100% - 5px) 0,calc(100% - 5px) 5px,100% 5px,100% calc(100% - 5px),calc(100% - 5px) calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,5px calc(100% - 5px),0 calc(100% - 5px));
+}
+.mh h2{margin:0 0 6px;font-size:18px;line-height:1.4}
+.mh p{margin:0;font-size:20px;color:var(--cream);opacity:.9}
+.mh .avatar-box{margin-left:auto;flex:none;text-align:center}
+.mh .avatar-box svg{width:56px;height:auto}
+.mh .avatar-box small{display:block;font-size:10px;color:var(--gold);margin-top:4px}
+
+/* ===== GRID ===== */
+.g{display:grid;gap:20px;grid-template-columns:1fr}
+@media(min-width:900px){.g{grid-template-columns:2fr 1fr}.g.r{grid-template-columns:1fr 2fr}}
+
+/* ===== MISSION 1 ===== */
+.row{display:flex;gap:12px;align-items:stretch;padding:10px 0;border-bottom:2px dashed #c4a868}
+.dz{
+  display:flex;flex:none;width:160px;min-height:48px;
+  cursor:pointer;align-items:center;justify-content:center;
+  border:3px dashed var(--ink);background:rgba(0,0,0,.05);
+  clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));
+}
+.dz.ok{border:3px solid var(--ok);background:#c8f5d4}
+.dz.no{border:3px solid var(--no);background:#f5c8c8}
+.cell{flex:1;padding:10px 14px;background:#fff;border:2px solid #c4a868;font-size:20px}
+.tag{
+  display:block;width:100%;margin:0 0 12px;
+  padding:14px;font-size:14px;
+  cursor:pointer;color:var(--ink);
+  background:#e8d090;border:3px solid var(--ink);
+  box-shadow:0 4px 0 var(--ink);
+  clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));
+}
+.tag.sel{outline:4px solid var(--ok);outline-offset:2px}
+.tag.in{margin:0;height:100%;font-size:12px;background:#a8e8a0}
+
+/* ===== MISSION 2 ===== */
+.li{
+  display:flex;gap:12px;align-items:center;
+  margin-bottom:12px;padding:10px 16px;
+  color:var(--ink);background:var(--paper);
+  border:3px solid var(--ink);
+  box-shadow:0 3px 0 rgba(0,0,0,.3);
+  font-size:20px;
+  clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));
+}
+.li.ok{border-color:var(--ok);background:#c8f5d4}
+.li.no{border-color:var(--no);background:#f5c8c8}
+.li b{width:32px;font-family:'Press Start 2P';font-size:18px;color:var(--accent)}
+.li div{flex:1}
+.li span{display:flex;flex-direction:column;gap:6px}
+.ar{
+  width:36px;height:36px;
+  color:#fff;font-size:12px;cursor:pointer;
+  background:var(--green);border:3px solid var(--ink);
+  box-shadow:0 3px 0 rgba(0,0,0,.3);
+  display:flex;align-items:center;justify-content:center;
+  clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));
+}
+.ar:disabled{opacity:.3;cursor:not-allowed}
+.ar:active:not(:disabled){transform:translateY(2px)}
+
+/* ===== MISSION 3 ===== */
+.ins{cursor:pointer;padding:2px 4px;border-bottom:3px solid transparent;border-radius:0}
+.ins:hover{background:#ffe680;border-color:var(--gold)}
+.ins.f{pointer-events:none;font-weight:bold;background:#a8e8a0;border-color:var(--ok)}
+.kop{text-align:center;margin-bottom:16px;padding-bottom:12px;border-bottom:3px double var(--ink)}
+.kop *{margin:4px 0}
+.kop h3{font-family:'Press Start 2P';font-size:12px}
+.kop h2{font-family:'Press Start 2P';font-size:16px}
+
+/* ===== MISSION 4 ===== */
+.fr{display:flex;gap:10px;align-items:center;margin:8px 0}
+.fr label{width:90px;font-weight:bold;font-size:20px}
+.in{
+  width:100%;padding:8px 10px;
+  font-family:'VT323',monospace;font-size:20px;
+  color:var(--ink);background:#fffae8;
+  border:2px dashed #b89a5a;
+}
+.in:focus{outline:3px solid var(--ok);background:#fff9c8}
+textarea.in{resize:vertical}
+.bub{
+  margin:10px 0;padding:12px 16px;
+  color:var(--cream);background:rgba(0,0,0,.4);
+  border:2px solid var(--accent);
+  font-size:20px;
+  clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));
+}
+.bub.blue{border-color:var(--green);background:rgba(78,205,196,.15)}
+
+/* ===== SCORE UI (REVAMP) ===== */
+.sc{
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  margin:10px 0; padding:12px 16px;
+  background:rgba(0,0,0,.5); border:2px solid var(--ink);
+  font-size:18px;
+  clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));
+}
+.sc span { flex: 1; min-width: 0; }
+.sc small { font-size: 14px; opacity: 0.8; color: var(--cream); }
+.sc b{
+  flex: none; padding:6px 14px; font-family:'Press Start 2P'; font-size:16px;
+  color:var(--ink); background:var(--gold); border:2px solid var(--ink);
+  box-shadow: 0 3px 0 rgba(0,0,0,.4);
+}
+.sc.total { border:3px solid var(--gold); background:rgba(245, 197, 24, 0.15); margin-top: 16px; padding: 16px 20px; }
+.sc.total span { font-family: 'Press Start 2P'; font-size: 16px; color: var(--gold); }
+.sc.total b { font-size: 24px; padding: 8px 20px; }
+
+/* ===== MODAL ===== */
+.mo{
+  position:fixed;inset:0;z-index:60;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  background:rgba(10,10,30,.9);
+  backdrop-filter:blur(6px);
+}
+.mo[hidden]{display:none}
+.mo .pbox{max-width:480px;width:100%;text-align:center;margin:0}
+#mi{font-size:56px;margin-bottom:12px}
+#mt{font-size:16px}
+#md{font-size:20px;margin:12px 0;line-height:1.5}
+#me{margin:14px 0 0;padding:12px;font-size:18px;background:rgba(0,0,0,.4);border:2px solid var(--ink);text-align:left}
+
+/* ===== MISC ===== */
+ul{margin:6px 0;padding-left:24px;font-size:20px}
+ul li{margin:6px 0}
+@media(max-width:600px){
+  body{font-size:20px}
+  .pbox{padding:20px}
+  .paper{padding:20px}
+  .btn{font-size:12px;padding:14px 20px;width:100%}
+  .hud-info{display:none}
+  .plank{font-size:9px}
+  .dz{width:120px}
+  .char-card .px svg{width:90px}
+  .mh .num{width:48px;height:48px;font-size:18px}
+  .mh h2{font-size:16px}
+  .mh p{font-size:18px}
+  .title{font-size:32px}
+  .rib{font-size:12px}
+  .fr label{width:70px;font-size:18px}
+  .sc.total span { font-size: 14px; }
+  .sc.total b { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== BACKGROUND SCENE OVERLAY ===== -->
+<div class="scene">
+  <div class="stars" id="stars"></div>
+</div>
+
+<!-- ===== HUD ===== -->
+<header class="hud">
+  <div class="hud-avatar" id="hudAvatar"></div>
+  <div class="hud-info">
+    <b>OFFICE MAIL</b>
+    <span id="hudName">Staf Baru</span>
+  </div>
+  <div class="plank">
+    <span id="pt">BRIEFING</span>
+    <i class="bar"><u id="pb"></u></i>
+  </div>
+  <div class="plank">🪙<span id="op">0</span></div>
+  <button class="snd-btn" id="sndBtn" title="Toggle Sound & Music">🔊</button>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main>
+
+<!-- ===== SECTION 0: WELCOME + CHARACTER SELECT ===== -->
+<section id="s0" class="scr">
+  <div class="hero">
+    <div class="hero-cast"> 🖥️✉️ </div>
+    <h1 class="title">OFFICE MAIL</h1>
+    <div class="rib">PIXEL ADVENTURE</div>
+  </div>
+  
+  <div class="pbox gold">
+    <h2>🎮 PILIH KARAKTER</h2>
+    <p>Pilih pion karakter Anda untuk memulai petualangan surat dinas!</p>
+    
+    <div class="char-grid">
+      <div class="char-card" data-char="male" onclick="selectChar('male')">
+        <div class="px" id="charMale"></div>
+        <h3>ALEX</h3>
+        <p>Laki-laki<br>Hoodie Hijau</p>
+        <span class="char-badge" style="display:none">✓ DIPILIH</span>
+      </div>
+      <div class="char-card" data-char="female" onclick="selectChar('female')">
+        <div class="px" id="charFemale"></div>
+        <h3>RACHEL</h3>
+        <p>Perempuan<br>Jaket Hitam</p>
+        <span class="char-badge" style="display:none">✓ DIPILIH</span>
+      </div>
+    </div>
+    
+    <div style="text-align:center;margin-top:20px">
+      <button class="btn green" id="startBtn" onclick="startGame()" disabled style="opacity:.5">▶ MULAI PETUALANGAN</button>
+    </div>
+  </div>
+  
+  <div class="pbox">
+    <h2>📖 BRIEFING MISI</h2>
+    <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:none" id="hrAvatar1"></div>
+      <div style="flex:1;min-width:240px">
+        <p><b style="color:var(--gold)">Pak Nata (HR):</b> Selamat datang, Staf Baru! Anda akan menjalani 4 misi untuk menguasai keterampilan menyusun Surat Dinas.</p>
+        <p>Selesaikan misi, kumpulkan <b style="color:var(--gold)">Office Points (OP)</b>, dan pelajari umpan balik untuk perbaikan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 1: MISSION 1 ===== -->
+<section id="s1" class="scr" hidden>
+  <div class="mh">
+    <b class="num">1</b>
+    <div style="flex:1">
+      <h2 class="rib">DETEKTIF STRUKTUR</h2>
+      <p>Pasangkan nama bagian surat ke kotak kosong yang tepat.</p>
+    </div>
+    <div class="avatar-box" id="m1Avatar"></div>
+  </div>
+  <div class="g">
+    <div class="paper">
+      <span class="tg">DRAFT-01</span>
+      <div id="m1b"></div>
+    </div>
+    <div class="pbox green" style="align-self:start">
+      <h3>🏷️ LABEL</h3>
+      <p style="font-size:18px;margin:0 0 12px">Klik label, lalu klik kotak kosong.</p>
+      <div id="m1p"></div>
+      <button class="btn gold" style="width:100%;margin-top:12px" onclick="chk1()">🔍 CEK</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 2: MISSION 2 ===== -->
+<section id="s2" class="scr" hidden>
+  <div class="mh">
+    <b class="num">2</b>
+    <div style="flex:1">
+      <h2 class="rib">SUSUN SURAT</h2>
+      <p>Gunakan tombol panah untuk menyusun ulang urutan surat dinas.</p>
+    </div>
+    <div class="avatar-box" id="m2Avatar"></div>
+  </div>
+  <div class="pbox">
+    <div id="m2l"></div>
+    <div style="text-align:right;margin-top:16px">
+      <button class="btn green" onclick="chk2()">✔ VERIFIKASI</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 3: MISSION 3 ===== -->
+<section id="s3" class="scr" hidden>
+  <div class="mh">
+    <b class="num">3</b>
+    <div style="flex:1">
+      <h2 class="rib">LETTER INSPECTOR</h2>
+      <p>Ada <b>4 kesalahan</b> pada draf. Klik teks yang salah!</p>
+    </div>
+    <div class="plank">DITEMUKAN: <span id="m3f">0</span>/4</div>
+  </div>
+  <div class="paper" style="max-width:800px;margin:0 auto">
+    <span class="tg">DRAFT</span>
+    <div class="kop">
+      <h3>PEMERINTAH KOTA MAJU JAYA</h3>
+      <h3>DINAS PENDIDIKAN</h3>
+      <h2>SMK NEGERI 1 BISA</h2>
+      <small>Jl. Pendidikan No. 123, Telp. (021) 555-1234</small>
+    </div>
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+      <div>Nomor: 005/SMKN1/X/2026<br>Lampiran: -<br>Perihal: Undangan Pertemuan Wali Murid</div>
+      <div><span class="ins" data-e="e1" data-x="1">Jakarta, 12-10-2026</span></div>
+    </div>
+    <p><span class="ins" data-e="e2" data-x="1">Kepada Yth.</span> Bapak/Ibu Wali Murid Kelas XI<br>di Tempat</p>
+    <p>Dengan hormat,</p>
+    <p>Bersama surat ini, kami <span class="ins" data-e="e3" data-x="1">ngundang</span> Bapak/Ibu untuk hadir dalam acara sosialisasi PKL:</p>
+    <p style="margin-left:20px">Hari, Tanggal : Senin, 20 Oktober 2026<br>Waktu : Pukul 09.00 WIB - Selesai<br>Tempat : Aula SMK Negeri 1 Bisa</p>
+    <p>Mengingat pentingnya acara tersebut, kami memohon kehadiran Bapak/Ibu <span class="ins" data-e="c1">tepat pada waktunya</span>.</p>
+    <p><span class="ins" data-e="e4" data-x="1">Sekian dan terima kasih.</span></p>
+    <div style="text-align:center;width:240px;margin:28px 0 0 auto">Kepala Sekolah,<br><br><br><b><u><span class="ins" data-e="c2">Drs. Budi Santoso, M.Pd.</span></u></b><br>NIP. 19800101 200501 1 003</div>
+  </div>
+</section>
+
+<!-- ===== SECTION 4: FINAL MISSION ===== -->
+<section id="s4" class="scr" hidden>
+  <div class="mh">
+    <b class="num">🏁</b>
+    <div style="flex:1">
+      <h2 class="rib">SURAT DINAS EMERGENCY</h2>
+      <p>Buatkan draf surat berdasarkan instruksi mendadak dari Kepala Sekolah.</p>
+    </div>
+    <div class="avatar-box" id="m4Avatar"></div>
+  </div>
+  <div class="g r">
+    <div class="pbox green" style="align-self:start">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
+        <div id="hrAvatar4" style="flex:none"></div>
+        <h3 style="margin:0">🧑‍💼 PAK NATA</h3>
+      </div>
+      <div class="bub">Tolong segera buatkan surat dinas untuk mengundang Kepala Sekolah dari <b>SMK Mitra Jaya</b>.</div>
+      <div class="bub">Tujuannya untuk kegiatan <b>Rapat Koordinasi PKL</b>.</div>
+      <div class="bub blue">Waktu: <b>5 Oktober 2026, 09.00 WIB</b><br>Tempat: <b>Ruang Rapat SMK Nusantara</b></div>
+      <p style="font-size:18px;margin:12px 0 0">✅ Isi seluruh kolom input<br>✅ Perhatikan kaidah bahasa<br>✅ Format alamat & salam</p>
+    </div>
+    <div>
+      <div class="paper">
+        <div class="kop">
+          <h3>PEMERINTAH PROVINSI JAWA TIMUR</h3>
+          <h2>SMK NUSANTARA</h2>
+          <small>Jl. Pendidikan No. 1, Kota Malang, Telp. (0341) 555123</small>
+        </div>
+        <div class="fr"><label>Nomor</label>:<input class="in" id="fn" placeholder="001/SMKN/X/2026"></div>
+        <div class="fr"><label>Lampiran</label>:<input class="in" id="fl" placeholder="-"></div>
+        <div class="fr"><label>Perihal</label>:<input class="in" id="fh" placeholder="Undangan Rapat"></div>
+        <textarea class="in" id="ft" rows="3" style="margin-top:8px" placeholder="Yth. ...&#10;di ..."></textarea><br><br>
+        <textarea class="in" id="fi" rows="10" style="margin-top:8px" placeholder="Dengan hormat,&#10;(Ketik isi surat...)"></textarea>
+        <div style="width:280px;margin:16px 0 0 auto;text-align:center"><input class="in" id="fp" placeholder="Hormat kami,"><br><br><br><input class="in" id="fd" placeholder="Nama / Jabatan"></div>
+      </div>
+      <div style="text-align:right;margin-top:16px">
+        <button class="btn" onclick="send()">📨 KIRIM SURAT</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 5: FINAL LETTER PREVIEW ===== -->
+<section id="s5" class="scr" hidden>
+  <div class="mh">
+    <b class="num">✉️</b>
+    <div style="flex:1">
+      <h2 class="rib">DRAF SURAT FINAL</h2>
+      <p>Inilah hasil surat yang Anda buat! Periksa kembali sebelum diserahkan ke HR.</p>
+    </div>
+  </div>
+  <div class="paper" id="finalLetterPreview" style="max-width:800px;margin:0 auto"></div>
+  <div style="text-align:right;margin-top:16px">
+    <button class="btn gold" onclick="results()">🏅 LANJUT KE HASIL</button>
+  </div>
+</section>
+
+<!-- ===== SECTION 6: RESULTS ===== -->
+<section id="s6" class="scr" hidden>
+  <div class="pbox gold" style="max-width:960px;margin:0 auto">
+    <div style="text-align:center">
+      <div style="font-size:72px">🏆</div>
+      <h2 style="font-size:28px">LAPORAN EVALUASI</h2>
+    </div>
+    <div class="g" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+      <div>
+        <h3>📈 RINCIAN SKOR</h3>
+        <div class="sc"><span>M1: Detektif <small>(coba <span id="a1">0</span>)</small></span><b id="r1">0</b></div>
+        <div class="sc"><span>M2: Susun <small>(coba <span id="a2">0</span>)</small></span><b id="r2">0</b></div>
+        <div class="sc"><span>M3: Inspector <small>(salah <span id="a3">0</span>)</small></span><b id="r3">0</b></div>
+        <div class="sc"><span>Final Mission <small>(Bhs/Isi/Eja)</small></span><b id="r4">0</b></div>
+        <div class="sc total"><span>TOTAL</span><b id="rt">0</b></div>
+        <div id="rb" style="text-align:center;font-size:28px;margin-top:10px"></div>
+      </div>
+      <div>
+        <h3>📝 CATATAN PEMBELAJARAN</h3>
+        <span id="rk" class="rib" style="font-size:12px">BELUM DINILAI</span>
+        <p><b style="color:var(--green)">✅ SUDAH KUASAI:</b></p>
+        <ul id="rg"></ul>
+        <p><b style="color:var(--no)">⚠️ PERLU KUATKAN:</b></p>
+        <ul id="rw"></ul>
+      </div>
+    </div>
+    <p id="rr" style="text-align:center;font-size:20px;margin-top:16px"></p>
+    <div style="text-align:center;margin-top:16px">
+      <button class="btn gold" onclick="location.reload()">🔄 MAIN LAGI</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== MODAL ===== -->
+<div class="mo" id="mo" hidden>
+  <div class="pbox" style="max-width:480px;width:100%;text-align:center">
+    <div id="mi"></div>
+    <h3 id="mt"></h3>
+    <p id="md"></p>
+    <div id="me" hidden></div>
+    <button class="btn green" id="mb" style="margin-top:16px;width:100%">OK</button>
+  </div>
+</div>
+
+<script>
+/* ============================================
+   PIXEL ART GENERATOR
+   ============================================ */
+function pxArt(map, palette, scale = 10) {
+  const rows = map.trim().split('\n').map(r => r.trim());
+  const h = rows.length;
+  const w = rows[0].length;
+  let rects = '';
+  rows.forEach((row, y) => {
+    [...row].forEach((ch, x) => {
+      if (palette[ch]) {
+        rects += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${palette[ch]}"/>`;
+      }
+    });
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" style="width:${w*scale}px;height:${h*scale}px;image-rendering:pixelated;max-width:100%;height:auto">${rects}</svg>`;
+}
+
+const PALETTE = {
+  skin: '#F4C2A1', skin_d: '#D4A578',
+  eye: '#0d0d1a', hair_b: '#6B3410', hair_d: '#4A2410',
+  green: '#4CAF50', green_d: '#2D5F2D',
+  pant_b: '#1A1A1A', white: '#FFFFFF',
+  jacket: '#2A2A3A', jacket_d: '#1A1A2A',
+  jeans: '#1E3A8A', jeans_d: '#162d6b',
+  shoe_b: '#0d0d1a',
+  grey: '#4A4A5A', grey_d: '#2A2A3A',
+  suit: '#1A2B4A', suit_d: '#0d1a30',
+  shirt_w: '#FFFFFF', tie: '#E94560', tie_d: '#B53548',
+};
+
+const CHARS = {
+  male: {
+    name: 'Alex',
+    map: `
+    ...BBBB...
+    ..BHHHHB..
+    ..BHHHHB..
+    ..HSSSSH..
+    ..HSEESH..
+    ..HSSSSH..
+    ...SSSS...
+    ...NNNN...
+    ..GGGGGG..
+    .PGGGGGGP.
+    .PGGGGGGP.
+    ..GGGGGG..
+    ..GGGGGG..
+    ..KKKKKK..
+    ..KK.KK...
+    ..KK.KK...
+    ..WW.WW...
+    ..BB.BB...
+    `,
+    pal: { B:PALETTE.hair_b, H:PALETTE.hair_d, S:PALETTE.skin, E:PALETTE.eye, N:PALETTE.skin_d, G:PALETTE.green, P:PALETTE.green_d, K:PALETTE.pant_b, W:PALETTE.white }
+  },
+  female: {
+    name: 'Rachel',
+    map: `
+    ...BBBB...
+    ..BHHHHB..
+    .BHHHHHHB.
+    .BHHHHHHB.
+    ..HSSSSH..
+    ..HSEESH..
+    ..HSSSSH..
+    ...SSSS...
+    ...NNNN...
+    ..JJJJJJ..
+    .JJJJJJJJ.
+    .JJJJJJJJ.
+    ..JJJJJJ..
+    ..DDDDDD..
+    ..DD.DD...
+    ..DD.DD...
+    ..XX.XX...
+    ..XX.XX...
+    `,
+    pal: { B:PALETTE.hair_b, H:PALETTE.hair_d, S:PALETTE.skin, E:PALETTE.eye, N:PALETTE.skin_d, J:PALETTE.jacket, D:PALETTE.jeans, X:PALETTE.shoe_b }
+  },
+  hr: {
+    name: 'Pak Nata',
+    map: `
+    ...GGGG...
+    ..GHHHHG..
+    ..GHHHHG..
+    ..HSSSSH..
+    ..HSEESH..
+    ..HSSSSH..
+    ...SSSS...
+    ...NNNN...
+    ..RRRRRR..
+    .SSSSSSSS.
+    .SSTTTSSS.
+    .SSSSSSSS.
+    .SSSSSSSS.
+    ..SSSSSS..
+    ..PPPPPP..
+    ..PP.PP...
+    ..PP.PP...
+    ..BB.BB...
+    `,
+    pal: { G:PALETTE.grey, H:PALETTE.grey_d, S:PALETTE.skin, E:PALETTE.eye, N:PALETTE.skin_d, R:PALETTE.shirt_w, S:PALETTE.suit, T:PALETTE.tie, P:PALETTE.suit_d, B:PALETTE.shoe_b }
+  }
+};
+
+/* ============================================
+   SOUND ENGINE & BGM (Web Audio API)
+   ============================================ */
+let audioCtx = null;
+let soundOn = true;
+let bgmInterval = null;
+let bgmPlaying = false;
+
+function initAudio() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e) { console.log('Audio not supported'); }
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function tone(freq, dur, type='square', vol=0.08) {
+  if (!soundOn || !audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + dur);
+}
+
+function sfx(name) {
+  if (!soundOn || !audioCtx) return;
+  switch(name) {
+    case 'click': tone(800, 0.05, 'square', 0.06); break;
+    case 'select': tone(600, 0.06); setTimeout(()=>tone(900, 0.08), 50); break;
+    case 'place': tone(500, 0.04); setTimeout(()=>tone(700, 0.04), 30); break;
+    case 'success': [523, 659, 784, 1047].forEach((f,i)=>setTimeout(()=>tone(f, 0.12, 'square', 0.08), i*70)); break;
+    case 'error': tone(200, 0.15, 'sawtooth', 0.1); setTimeout(()=>tone(150, 0.15, 'sawtooth', 0.1), 100); break;
+    case 'complete': [523, 659, 784, 1047, 1319, 1568].forEach((f,i)=>setTimeout(()=>tone(f, 0.15, 'square', 0.08), i*90)); break;
+    case 'find': tone(880, 0.05); setTimeout(()=>tone(1100, 0.05), 40); setTimeout(()=>tone(1320, 0.1), 80); break;
+    case 'wrong': tone(300, 0.1, 'sawtooth', 0.08); break;
+    case 'win': [523, 659, 784, 1047, 1319, 1568, 2093].forEach((f,i)=>setTimeout(()=>tone(f, 0.2, 'square', 0.08), i*80)); break;
+  }
+}
+
+function startBGM() {
+  if (!soundOn || !audioCtx || bgmPlaying) return;
+  bgmPlaying = true;
+  const melody = [
+    392.00, 0, 523.25, 0, 659.25, 0, 523.25, 0,
+    440.00, 0, 587.33, 0, 698.46, 0, 587.33, 0,
+    392.00, 0, 523.25, 0, 659.25, 0, 784.00, 0,
+    698.46, 0, 659.25, 0, 587.33, 0, 523.25, 0
+  ];
+  const bass = [130.81, 0, 0, 0, 174.61, 0, 0, 0, 196.00, 0, 0, 0, 146.83, 0, 0, 0];
+  let step = 0;
+  
+  bgmInterval = setInterval(() => {
+    if (melody[step % melody.length] > 0) tone(melody[step % melody.length], 0.15, 'square', 0.03);
+    if (bass[step % bass.length] > 0) tone(bass[step % bass.length], 0.3, 'triangle', 0.05);
+    step++;
+  }, 180);
+}
+
+function stopBGM() {
+  if (bgmInterval) {
+    clearInterval(bgmInterval);
+    bgmInterval = null;
+  }
+  bgmPlaying = false;
+}
+
+document.getElementById('sndBtn').onclick = function() {
+  soundOn = !soundOn;
+  this.textContent = soundOn ? '🔊' : '🔇';
+  if (soundOn) { 
+    initAudio(); 
+    sfx('click'); 
+    startBGM(); 
+  } else {
+    stopBGM();
+  }
+};
+
+/* ============================================
+   STARS BACKGROUND
+   ============================================ */
+(function makeStars() {
+  const c = document.getElementById('stars');
+  for (let i = 0; i < 30; i++) {
+    const s = document.createElement('i');
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 60 + '%';
+    s.style.animationDelay = Math.random() * 3 + 's';
+    c.appendChild(s);
+  }
+})();
+
+/* ============================================
+   GAME STATE
+   ============================================ */
+const $ = id => document.getElementById(id);
+let cur = 0, op = 0, selectedChar = null;
+let att = {m1:0, m2:0, m3:0}, sc = {m1:0, m2:0, m3:0, m4:0}, fb = {good:[], bad:[]};
+
+function renderCharSVG(charKey, scale = 8) {
+  const c = CHARS[charKey];
+  return pxArt(c.map, c.pal, scale);
+}
+
+/* ============================================
+   CHARACTER SELECTION
+   ============================================ */
+ $('charMale').innerHTML = renderCharSVG('male', 10);
+ $('charFemale').innerHTML = renderCharSVG('female', 10);
+ $('hrAvatar1').innerHTML = renderCharSVG('hr', 6);
+
+function selectChar(key) {
+  initAudio();
+  sfx('select');
+  selectedChar = key;
+  document.querySelectorAll('.char-card').forEach(c => {
+    c.classList.toggle('sel', c.dataset.char === key);
+    c.querySelector('.char-badge').style.display = c.dataset.char === key ? 'inline-block' : 'none';
+  });
+  const btn = $('startBtn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+}
+
+function startGame() {
+  if (!selectedChar) return;
+  initAudio();
+  sfx('start');
+  startBGM();
+  $('hudAvatar').innerHTML = renderCharSVG(selectedChar, 4);
+  $('hudName').textContent = CHARS[selectedChar].name;
+  $('m1Avatar').innerHTML = renderCharSVG(selectedChar, 5);
+  $('m2Avatar').innerHTML = renderCharSVG(selectedChar, 5);
+  $('m4Avatar').innerHTML = renderCharSVG(selectedChar, 5);
+  $('hrAvatar4').innerHTML = renderCharSVG('hr', 5);
+  next();
+}
+
+/* ============================================
+   PROGRESS
+   ============================================ */
+function pop(t, title, desc, btn, cb, extra) {
+  sfx(t === 'success' ? 'success' : t === 'error' ? 'error' : 'click');
+  $('mi').textContent = t === 'success' ? '✅' : t === 'info' ? 'ℹ️' : '❌';
+  $('mt').textContent = title;
+  $('md').innerHTML = desc;
+  $('me').innerHTML = extra || '';
+  $('me').hidden = !extra;
+  $('mb').textContent = btn;
+  $('mo').hidden = false;
+  $('mb').onclick = () => { sfx('click'); $('mo').hidden = true; cb && cb(); };
+}
+
+function addOP(n) { op += n; $('op').textContent = op; sfx('find'); }
+
+function next() {
+  if (cur >= 0) $('s' + cur).hidden = true;
+  cur++;
+  $('s' + cur).hidden = false;
+  $('pb').style.width = cur / 6 * 100 + '%';
+  $('pt').textContent = cur < 5 ? `MISI ${cur}/4` : (cur === 5 ? 'REVIEW' : 'SELESAI!');
+  [, setup1, setup2, setup3][cur]?.();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================
+   MISSION 1: Detektif Struktur
+   ============================================ */
+const m1 = [
+  ['kop','Kepala/Kop Surat','<b>Pemerintah Provinsi Jawa Timur</b><br>SMK NUSANTARA MALANG<br>Jl. Pendidikan No.1'],
+  ['nomor','Nomor, Lampiran, Hal','Nomor: 421/010/SMKN/2026<br>Lampiran: 1 lembar<br>Perihal: Undangan Rapat'],
+  ['tujuan','Alamat Tujuan','Yth. Kepala SMP Negeri 1<br>di Tempat'],
+  ['buka','Salam Pembuka','Dengan hormat,'],
+  ['isi','Isi Surat','Mengharap kehadiran Bapak/Ibu dalam rapat koordinasi...'],
+  ['tutup','Salam Penutup','Atas perhatian Bapak/Ibu, kami ucapkan terima kasih.'],
+  ['ttd','Nama & Tanda Tangan','Kepala Sekolah,<br><br>Drs. Budi Santoso, M.Pd.']
+];
+let sel = null;
+
+function setup1() {
+  $('m1b').innerHTML = '';
+  $('m1p').innerHTML = '';
+  m1.forEach(([id,,c]) => {
+    const r = document.createElement('div');
+    r.className = 'row';
+    r.innerHTML = `<div class="dz" data-e="${id}"></div><div class="cell">${c}</div>`;
+    r.firstChild.onclick = e => place(e.currentTarget);
+    $('m1b').appendChild(r);
+  });
+  [...m1].sort(() => Math.random() - .5).forEach(([id,n]) => {
+    const t = document.createElement('button');
+    t.className = 'tag';
+    t.textContent = '🧩 ' + n;
+    t.dataset.v = id;
+    t.onclick = () => { sfx('click'); tagClick(t); };
+    $('m1p').appendChild(t);
+  });
+}
+
+function tagClick(t) {
+  if (t.parentElement.classList.contains('dz')) {
+    $('m1p').appendChild(t);
+    t.className = 'tag';
+    sel = null;
+    return;
+  }
+  document.querySelectorAll('.tag').forEach(x => x.classList.remove('sel'));
+  sel = t;
+  t.classList.add('sel');
+}
+
+function place(dz) {
+  if (!sel) return;
+  sfx('place');
+  const o = dz.firstElementChild;
+  if (o) { o.className = 'tag'; $('m1p').appendChild(o); }
+  dz.appendChild(sel);
+  sel.className = 'tag in';
+  sel = null;
+}
+
+function chk1() {
+  sfx('click');
+  let ok = 0;
+  const z = [...document.querySelectorAll('.dz')];
+  z.forEach(d => {
+    const t = d.firstElementChild;
+    const good = t && t.dataset.v === d.dataset.e;
+    d.classList.toggle('ok', !!good);
+    d.classList.toggle('no', !good);
+    if (good) ok++;
+  });
+  if (ok === z.length) {
+    sc.m1 = 100;
+    fb.good.push('Memahami struktur surat dinas dengan tepat.');
+    const n = Math.max(1, 3 - att.m1);
+    addOP(n);
+    sfx('complete');
+    pop('success', 'KERJA BAGUS!', `Anda berhasil identifikasi semua bagian surat! Dapat <b>${n} OP</b>.`, 'Lanjut Misi 2 ▶', next);
+  } else {
+    att.m1++;
+    sfx('error');
+    let m = `Ada <b>${z.length - ok}</b> bagian yang salah/kosong.`;
+    if (att.m1 === 1) m += '<br><br><em>💡 Petunjuk: Kop di atas, diikuti Nomor, lalu Alamat Tujuan.</em>';
+    else if (att.m1 === 2) m += '<br><br><em>💡 Salam Pembuka sebelum Isi, diakhiri Penutup & TTD.</em>';
+    pop('warning', 'BELUM TEPAT', m, 'Coba Lagi ↻');
+  }
+}
+
+/* ============================================
+   MISSION 2: Susun Surat
+   ============================================ */
+const m2 = [
+  'Pemerintah Provinsi Jatim<br>SMK NUSANTARA',
+  'Malang, 5 Oktober 2026',
+  'Nomor: 005/SMKN/X/2026<br>Hal: Undangan',
+  'Yth. Bapak/Ibu Guru<br>di Tempat',
+  'Dengan hormat,',
+  'Bersama ini kami mengundang hadir pada rapat evaluasi...',
+  'Demikian undangan ini, terima kasih.',
+  'Kepala Sekolah,<br>(ttd)<br>Ahmad, S.Pd.'
+].map((t,i) => ({i, t}));
+let ord = [];
+
+function setup2() {
+  ord = [...m2].sort(() => Math.random() - .5);
+  draw2();
+}
+
+function draw2() {
+  const L = $('m2l');
+  L.innerHTML = '';
+  ord.forEach((o, k) => {
+    const l = document.createElement('div');
+    l.className = 'li';
+    l.innerHTML = `<b>${k+1}</b><div>${o.t}</div>`;
+    const s = document.createElement('span');
+    [['▲',-1],['▼',1]].forEach(([c,d]) => {
+      const b = document.createElement('button');
+      b.className = 'ar';
+      b.textContent = c;
+      b.disabled = k+d < 0 || k+d >= ord.length;
+      b.onclick = () => { sfx('click'); [ord[k],ord[k+d]] = [ord[k+d],ord[k]]; draw2(); };
+      s.appendChild(b);
+    });
+    l.appendChild(s);
+    L.appendChild(l);
+  });
+}
+
+function chk2() {
+  sfx('click');
+  let w = -1;
+  document.querySelectorAll('.li').forEach((el, k) => {
+    const ok = ord[k].i === k;
+    el.classList.toggle('ok', ok);
+    el.classList.toggle('no', !ok);
+    if (!ok && w < 0) w = k;
+  });
+  if (w < 0) {
+    sc.m2 = 100;
+    fb.good.push('Mampu menyusun urutan bagian surat dinas secara logis.');
+    const n = Math.max(1, 3 - att.m2);
+    addOP(n);
+    sfx('complete');
+    pop('success', 'URUTAN TEPAT!', `Susunan draf surat sudah benar! Dapat <b>${n} OP</b>.`, 'Lanjut Misi 3 ▶', next);
+  } else {
+    att.m2++;
+    sfx('error');
+    pop('warning', 'TERTUKAR', 'Beberapa bagian belum berada pada urutan benar (merah).', 'Perbaiki ↻', null,
+      `<b>💡 Petunjuk:</b> Perhatikan urutan ke-${w+1}. Seharusnya:<br><em>${m2[w].t.replace(/<br>/g,' ').slice(0,40)}...</em>`);
+  }
+}
+
+/* ============================================
+   MISSION 3: Letter Inspector
+   ============================================ */
+const ex = {
+  e1: 'Format tanggal tidak menggunakan tanda hubung. Penulisan tepat: <b>12 Oktober 2026</b>.',
+  e2: "Kata 'Kepada' mubazir jika ada 'Yth.'. Cukup <b>Yth.</b>",
+  e3: "'ngundang' tidak baku. Harus <b>mengundang</b>.",
+  e4: 'Penutup kurang formal. Gunakan: <b>Demikian surat ini kami sampaikan, atas perhatian... dll.</b>'
+};
+let found = 0;
+
+function setup3() {
+  found = 0;
+  $('m3f').textContent = '0';
+  document.querySelectorAll('.ins').forEach(el => {
+    el.classList.remove('f');
+    el.onclick = () => {
+      if (el.classList.contains('f')) return;
+      if (el.dataset.x) {
+        sfx('find');
+        el.classList.add('f');
+        found++;
+        $('m3f').textContent = found;
+        const d = found === 4;
+        if (d) sfx('complete');
+        pop('success', d ? 'TEPAT SEKALI!' : 'KESALAHAN DITEMUKAN', ex[el.dataset.e] + (d ? '<br><br><b>🎉 Semua kesalahan ditemukan!</b>' : ''), d ? 'Selesaikan Misi 3 ▶' : 'Lanjut Mencari 🔍', d ? done3 : null);
+      } else {
+        att.m3++;
+        sfx('wrong');
+        pop('warning', 'KURANG TEPAT', 'Bagian yang Anda pilih sudah benar. Coba perhatikan bagian lain!', 'Kembali Mencari 🔍');
+      }
+    };
+  });
+}
+
+function done3() {
+  sc.m3 = 100;
+  addOP(att.m3 ? att.m3 <= 2 ? 2 : 1 : 3);
+  if (att.m3) {
+    fb.good.push('Mampu mengidentifikasi kesalahan ejaan, meski sempat terkecoh.');
+    fb.bad.push('Perlu cermat membedakan kalimat baku dan tidak baku.');
+  } else {
+    fb.good.push('Sangat teliti mengidentifikasi kesalahan ejaan dan format surat.');
+  }
+  next();
+}
+
+/* ============================================
+   FINAL MISSION: Surat Dinas Emergency
+   ============================================ */
+function send() {
+  sfx('click');
+  const v = k => $(k).value.trim();
+  const no = v('fn'), lp = v('fl'), hl = v('fh'), tj = v('ft'), isi = v('fi'), pt = v('fp'), td = v('fd');
+  
+  if (!no && !hl && !isi) {
+    sfx('error');
+    return pop('error', 'FORM KOSONG', 'Anda belum mengisi draf surat sama sekali.', 'Kembali ↻');
+  }
+  
+  let scoreBahasa = 30, scoreIsi = 40, scoreEjaan = 30;
+  const notesBad = [], notesGood = [];
+  
+  const tl = tj.toLowerCase(), il = isi.toLowerCase();
+
+  // 1. Bahasa Baku & Formal (Max 30)
+  if (tl.includes('kepada yth') || tl.includes('kepada')) { scoreBahasa -= 5; notesBad.push("Kata 'Kepada' sebelum 'Yth.' mubazir (-5)."); }
+  if (/\b(yg|dgn|dlm|utk|kpd|bgt|brp|gak|gk)\b/i.test(isi)) { scoreBahasa -= 10; notesBad.push('Terdapat singkatan informal tidak baku (-10).'); }
+  if (pt && !pt.toLowerCase().includes('hormat kami,')) { scoreBahasa -= 5; notesBad.push("Salam penutup idealnya 'Hormat kami,' (-5)."); }
+  if (il.includes('sekian') || il.includes('terima kasih')) { scoreBahasa -= 5; notesBad.push("Penutup 'Sekian/terima kasih' kurang formal, gunakan kalimat lengkap (-5)."); }
+  if (scoreBahasa >= 25) notesGood.push('Bahasa surat sudah cukup baku dan formal.');
+  scoreBahasa = Math.max(0, scoreBahasa);
+
+  // 2. Kesesuaian Isi (Max 40)
+  if (!il.includes('smk mitra jaya')) { scoreIsi -= 8; notesBad.push('Tujuan (SMK Mitra Jaya) tidak disebut (-8).'); }
+  if (!il.includes('rapat koordinasi pkl') && !il.includes('rapat pkl')) { scoreIsi -= 8; notesBad.push('Agenda Rapat Koordinasi PKL tidak jelas (-8).'); }
+  if (!il.includes('5 oktober 2026') && !il.includes('5 okt')) { scoreIsi -= 8; notesBad.push('Tanggal 5 Oktober 2026 tidak ada (-8).'); }
+  if (!il.includes('09.00')) { scoreIsi -= 8; notesBad.push('Waktu 09.00 WIB tidak ada (-8).'); }
+  if (!il.includes('ruang rapat')) { scoreIsi -= 8; notesBad.push('Tempat (Ruang Rapat SMK Nusantara) tidak spesifik (-8).'); }
+  if (scoreIsi >= 35) notesGood.push('Isi surat sudah sesuai dengan instruksi yang diberikan.');
+  scoreIsi = Math.max(0, scoreIsi);
+
+  // 3. Ejaan & Tanda Baca (Max 30)
+  if (!no) { scoreEjaan -= 5; notesBad.push('Nomor surat kosong (-5).'); }
+  if (!lp) { scoreEjaan -= 3; notesBad.push('Lampiran kosong (-3).'); }
+  if (!hl) { scoreEjaan -= 5; notesBad.push('Perihal kosong (-5).'); }
+  if (!tj) { scoreEjaan -= 5; notesBad.push('Alamat tujuan kosong (-5).'); }
+  if (!td) { scoreEjaan -= 4; notesBad.push('Nama penandatangan kosong (-4).'); }
+  if (pt && !pt.includes(',')) { scoreEjaan -= 4; notesBad.push('Salam penutup kurang tanda koma (,) (-4).'); }
+  if (isi && isi.length < 50) { scoreEjaan -= 4; notesBad.push('Isi surat terlalu singkat (<50 huruf) (-4).'); }
+  if (scoreEjaan >= 25) notesGood.push('Ejaan dan kelengkapan format surat sudah baik.');
+  scoreEjaan = Math.max(0, scoreEjaan);
+
+  sc.m4 = scoreBahasa + scoreIsi + scoreEjaan;
+  addOP(sc.m4 >= 85 ? 3 : sc.m4 >= 70 ? 2 : 1);
+  
+  fb.good.push(...notesGood);
+  fb.bad.push(...notesBad);
+  fb.bad.push(`Rincian Skor Final: Bahasa (${scoreBahasa}/30) + Isi (${scoreIsi}/40) + Ejaan (${scoreEjaan}/30) = ${sc.m4}`);
+  
+  // Render Preview Surat Fisik
+  const preview = $('finalLetterPreview');
+  preview.innerHTML = `
+    <div class="kop">
+      <h3>PEMERINTAH PROVINSI JAWA TIMUR</h3>
+      <h2>SMK NUSANTARA</h2>
+      <small>Jl. Pendidikan No. 1, Kota Malang, Telp. (0341) 555123</small>
+    </div>
+    <div>Nomor: ${no || '-'}<br>Lampiran: ${lp || '-'}<br>Perihal: ${hl || '-'}</div><br>
+    <div>Yth. ${tj ? tj.replace(/\n/g, '<br>') : '...'}</div><br>
+    <div>Dengan hormat,</div><br>
+    <div style="white-space: pre-wrap;">${isi ? isi.replace(/\n/g, '<br>') : '(Isi surat kosong)'}</div><br>
+    <div style="width:280px;margin:16px 0 0 auto;text-align:center">
+      ${pt || 'Hormat kami,'}<br><br><br>
+      <b><u>${td || '(Nama / Jabatan)'}</u></b>
+    </div>
+  `;
+
+  sfx('complete');
+  pop('success', 'SURAT DISUSUN!', 'Draf surat telah dibuat. Periksa hasil fisik surat Anda di layar berikutnya.', 'Lihat Surat ✉️', next);
+}
+
+/* ============================================
+   RESULTS
+   ============================================ */
+function results() {
+  sfx('win');
+  next();
+  for (let i = 1; i <= 3; i++) $('a' + i).textContent = att['m' + i];
+  for (let i = 1; i <= 4; i++) $('r' + i).textContent = sc['m' + i];
+  const avg = (sc.m1 + sc.m2 + sc.m3 + sc.m4) / 4;
+  $('rt').textContent = avg.toFixed(1);
+  const [k, r] = avg >= 85
+    ? ['SUDAH KUASAI', 'Luar biasa! Kompetensi Anda sangat baik. Siap menjadi Staf Administrasi pro!']
+    : avg >= 70
+    ? ['CUKUP KUASAI', 'Cukup baik. Perhatikan catatan penguatan agar lebih sempurna.']
+    : ['PERLU KUATKAN', 'Jangan menyerah! Baca kembali teori dasar surat dinas, lalu coba lagi.'];
+  $('rk').textContent = k;
+  $('rr').textContent = r;
+  $('rb').textContent = '🏅'.repeat(Math.min(op, 12));
+  $('rg').innerHTML = fb.good.length ? fb.good.map(t => `<li>${t}</li>`).join('') : '<li>Belum terlihat penguasaan signifikan.</li>';
+  $('rw').innerHTML = fb.bad.length ? [...new Set(fb.bad)].map(t => `<li>${t}</li>`).join('') : '<li>Sempurna! Tidak ada catatan kelemahan.</li>';
+  stopBGM();
+}
+
+document.addEventListener('click', initAudio, { once: true });
+document.addEventListener('keydown', initAudio, { once: true });
+</script>
+</body>
+</html>
